@@ -1,0 +1,167 @@
+/*! normalize.css v2.1.2 | MIT License | git.io/normalize */
+article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}
+audio,canvas,video{display:inline-block}
+audio:not([controls]){display:none;height:0}
+[hidden]{display:none}
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
+body{margin:0}
+a:focus{outline:thin dotted}
+a:active,a:hover{outline:0}
+h1{font-size:2em;margin:.67em 0}
+abbr[title]{border-bottom:1px dotted}
+b,strong{font-weight:bold}
+dfn{font-style:italic}
+hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}
+mark{background:#ff0;color:#000}
+code,kbd,pre,samp{font-family:monospace,serif;font-size:1em}
+pre{white-space:pre-wrap}
+q{quotes:"\201C" "\201D" "\2018" "\2019"}
+small{font-size:80%}
+sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}
+sup{top:-0.5em}
+sub{bottom:-0.25em}
+img{border:0}
+svg:not(:root){overflow:hidden}
+figure{margin:0}
+fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}
+legend{border:0;padding:0}
+button,input,select,textarea{font-family:inherit;font-size:100%;margin:0}
+button,input{line-height:normal}
+button,select{text-transform:none}
+button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}
+button[disabled],html input[disabled]{cursor:default}
+input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0}
+input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}
+input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}
+button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}
+textarea{overflow:auto;vertical-align:top}
+table{border-collapse:collapse;border-spacing:0}
+
+body {
+    margin: 0;
+    padding: 0 1em;
+    font-family: Avenir, sans-serif;
+    word-wrap: break-word;
+    line-height: 1.5;
+    background: #FFF;
+    color: #2c3e50;
+}
+
+.main {
+    max-width: 45em;
+    margin: 0 auto;
+}
+
+header,
+header h1 {
+    text-align: center;
+}
+
+a {
+    color: #2980b9;
+}
+a:visited {
+    color: #8e44ad;
+}
+
+.toc {
+    margin: 1em 0;
+    padding: 0;
+}
+    .toc li {
+        padding: .5em 0;
+        list-style: none;
+        border-top: 1px solid #EEE;
+    }
+    .toc a {
+        color: #2980b9;
+        text-decoration: none;
+    }
+
+/* Articles */
+.hn-article {
+    border-top: 3px solid #ecf0f1;
+    padding: 2em 0;
+}
+.title {
+    line-height: 1.2em;
+}
+h1 a {
+    color: #2c3e50;
+    text-decoration: none;
+}
+.meta,
+.meta a {
+    margin-bottom: 0;
+    color: #7f8c8d;
+}
+    blockquote {
+        margin: 1em 0 1em 0;
+        padding-left: 1em;
+        border-left: 3px solid #EEE;
+    }
+
+    table {
+        border: 1px solid #EEE;
+        table-layout: fixed;
+        width: 100%;
+    }
+    tr {
+        border-top: 1px solid #EEE;
+    }
+    td {
+        padding: 1ex;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    pre {
+        border: 1px solid #CCC;
+        padding: 1em;
+        background: #F3F3F3;
+    }
+
+    iframe {
+        max-width: 100%;
+    }
+
+.toolbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,.2);
+    color: #FFF;
+    text-align: center;
+    padding: .4em .4em 1em .4em;
+    font-family: Avenir;
+}
+    .toolbar a {
+        text-transform: uppercase;
+        color: #FFF;
+        display: inline-block;
+        padding: .3em 1em;
+        text-decoration: none;
+        background: #000;
+        border-radius: 24px;
+    }
+    .toolbar a:active {
+        -o-transform: translateY(1px);
+        -ms-transform: translateY(1px);
+        -moz-transform: translateY(1px);
+        -webkit-transform: translateY(1px);
+        transform: translateY(1px);
+    }
+
+footer {
+    background: #EEE;
+    padding: 1em 1em 3em 1em;
+    margin: 0 -1em;
+}
+    footer div {
+        max-width: 45em;
+        margin: 0 auto;
+    }

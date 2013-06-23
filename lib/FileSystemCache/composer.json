@@ -1,0 +1,27 @@
+{
+    "name": "jdorn/file-system-cache",
+    "description": "an easy way to cache data in the file system",
+    "homepage": "https://github.com/jdorn/FileSystemCache/",
+    "keywords": ["cache", "file system"],
+    "minimum-stability": "dev",
+    "license": "LGPL",
+    "type": "library",
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "authors": [
+        {
+            "name": "Jeremy Dorn",
+            "email": "jeremy@jeremydorn.com",
+            "homepage": "http://jeremydorn.com/"
+        }
+    ],
+    "autoload": {
+        "classmap": ["lib"]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}

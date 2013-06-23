@@ -1,0 +1,6 @@
+language: php
+php:
+  - 5.4
+  - 5.3
+before_script: mkdir tests/cache; mkdir tests/cache/test; mkdir tests/cache/test2; mkdir tests/cache/test/test; chmod -R 777 tests/cache;
+script: phpunit --coverage-text
