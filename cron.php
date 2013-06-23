@@ -10,10 +10,15 @@ $force = false;
 $fhn = new FullFeed(feedUrl);
 $new = $fhn->update();
 if ($force || ($new > 0)) {
+	echo "$new new article(s)\n";
 	if ($fhn->generateOutput()) {
 		echo "Output OK\n";
+	} else {
+		echo "Error saving output\n";
 	}
     if ($fhn->upload(awsAccessKey, awsSecretKey, awsS3BucketName)) {
-        echo "Updated with $new articles\n";
+        echo "Uploaded to S3 OK\n";
+    } else {
+    	echo "Error uploading to S3\n";
     }
 }
