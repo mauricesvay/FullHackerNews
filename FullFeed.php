@@ -42,7 +42,7 @@ class FullFeed {
 
     public function update() {
         if (!$this->feed->init()) {
-            echo "Error fetching feed : ",$feed->error , "\n";
+            echo "Error fetching feed : ",$this->feed->error , "\n";
             exit;
         }
 
