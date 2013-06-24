@@ -50,7 +50,6 @@ class FullFeed {
         $i = 0;
         foreach ($this->feed->get_items() as $item) {
             $url = $item->get_permalink();
-            $id = sha1($url);
             $link = $item->get_permalink();
             $link_url_parts = parse_url($link);
             $site = $link_url_parts['host'];
