@@ -7,6 +7,7 @@ Can work with any other feed.
 
 # Requirement
 * PHP >= 5.3.15
+* Amazon S3 account
 
 # Installing
 
