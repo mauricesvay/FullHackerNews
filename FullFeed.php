@@ -42,7 +42,7 @@ class FullFeed {
 
     public function update() {
         if (!$this->feed->init()) {
-            echo "Error fetching feed : ",$feed->error , "\n";
+            echo "Error fetching feed : ",$this->feed->error , "\n";
             exit;
         }
 
@@ -50,7 +50,6 @@ class FullFeed {
         $i = 0;
         foreach ($this->feed->get_items() as $item) {
             $url = $item->get_permalink();
-            $id = sha1($url);
             $link = $item->get_permalink();
             $link_url_parts = parse_url($link);
             $site = $link_url_parts['host'];
