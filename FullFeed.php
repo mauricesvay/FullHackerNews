@@ -36,7 +36,8 @@ class FullFeed {
         //Mustache
         Mustache_Autoloader::register();
         $this->mustache = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__).'/views')
+            'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__).'/views'),
+            'partials_loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__).'/views/partials')
         ));
     }
 
