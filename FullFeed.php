@@ -64,9 +64,10 @@ class FullFeed {
                 //Do not download PDF or images
             } else {
                 if (false === ($html = FileSystemCache::retrieve($key))) {
-                    $html = file_get_contents($url);
-                    FileSystemCache::store($key, $html);
-                    $new++;
+                    if ($html = file_get_contents($url)) {
+                        FileSystemCache::store($key, $html);
+                        $new++;
+                    }
                 }
             }
 
