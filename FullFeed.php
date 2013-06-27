@@ -141,7 +141,7 @@ class FullFeed {
         //Minify HTML
         // $out = Minify_HTML::minify($out);
 
-        file_put_contents($this->outputFile, $out);
+        $index_ok = file_put_contents($this->outputFile, $out);
 
         //Generate cache manifest
         $cachedfiles = array();
@@ -154,16 +154,31 @@ class FullFeed {
             'version' => $lastupdate,
             'cachedfiles' => implode("\n", $cachedfiles)
         ));
-        file_put_contents($this->cacheFile, $out);
+        $manifest_ok = file_put_contents($this->cacheFile, $out);
 
-        return true;
+        return $index_ok && $manifest_ok;
     }
 
     public function upload($awsAccessKey, $awsSecretKey, $awsS3BucketName) {
         $s3 = new S3($awsAccessKey, $awsSecretKey);
-        if ($s3->putObjectFile($this->outputFile, $awsS3BucketName, baseName($this->outputFile), S3::ACL_PUBLIC_READ)) {
-            return true;
-        }
-        return false;
+
+        $index_ok = $s3->putObjectFile(
+                        $this->outputFile, 
+                        $awsS3BucketName, 
+                        baseName($this->outputFile), 
+                        S3::ACL_PUBLIC_READ
+                    );
+        $manifest_ok = $s3->putObjectFile(
+                        $this->cacheFile, 
+                        $awsS3BucketName, 
+                        baseName($this->cacheFile), 
+                        S3::ACL_PUBLIC_READ,
+                        array(),
+                        array(
+                            "Content-Type" => "text/cache-manifest"
+                        )
+                    );
+        var_dump($manifest_ok);
+        return $index_ok && $manifest_ok;
     }
 }
