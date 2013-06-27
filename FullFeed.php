@@ -22,7 +22,7 @@ class FullFeed {
 
     public function __construct($feedUrl) {
         $this->outputFile = dirname(__FILE__).'/www/index.html';
-        $this->cacheFile = dirname(__FILE__).'/www/fullhn.manifest';
+        $this->cacheFile = dirname(__FILE__).'/www/cache.manifest';
 
         //Feed
         $this->feed = new SimplePie();
@@ -178,7 +178,6 @@ class FullFeed {
                             "Content-Type" => "text/cache-manifest"
                         )
                     );
-        var_dump($manifest_ok);
         return $index_ok && $manifest_ok;
     }
 }
