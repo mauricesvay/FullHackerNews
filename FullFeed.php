@@ -11,15 +11,18 @@ include dirname(__FILE__)."/lib/mustache.php/src/Mustache/Autoloader.php";
 
 class FullFeed {
 
+    private $outputFile;
+    private $cacheFile;
+
     private $purifier;
     private $readability;
     private $feed;
     private $articles;
     private $mustache;
-    private $outputFile;
 
     public function __construct($feedUrl) {
         $this->outputFile = dirname(__FILE__).'/www/index.html';
+        $this->cacheFile = dirname(__FILE__).'/www/fullhn.manifest';
 
         //Feed
         $this->feed = new SimplePie();
@@ -125,17 +128,35 @@ class FullFeed {
     }
 
     public function generateOutput() {
+        $lastupdate = date('r');
+
+        //Generate index.html
         $tpl = $this->mustache->loadTemplate('index');
         $out = $tpl->render(array(
             'title' => $this->feed->get_title(),
             'articles' => $this->articles,
-            'lastupdate' => date('r')
+            'lastupdate' => $lastupdate
         ));
         
         //Minify HTML
         // $out = Minify_HTML::minify($out);
 
-        return file_put_contents($this->outputFile, $out);
+        file_put_contents($this->outputFile, $out);
+
+        //Generate cache manifest
+        $cachedfiles = array();
+        $path = dirname(__FILE__).'/www/';
+        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path)) as $filename) {
+            $cachedfiles[] = str_replace($path, "", $filename);
+        }
+        $tpl = $this->mustache->loadTemplate('fullhn.manifest');
+        $out = $tpl->render(array(
+            'version' => $lastupdate,
+            'cachedfiles' => implode("\n", $cachedfiles)
+        ));
+        file_put_contents($this->cacheFile, $out);
+
+        return true;
     }
 
     public function upload($awsAccessKey, $awsSecretKey, $awsS3BucketName) {

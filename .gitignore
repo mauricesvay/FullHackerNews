@@ -1,4 +1,5 @@
 .DS_Store
 /config.php
 www/index.html
+www/fullhn.manifest
 cache/*
