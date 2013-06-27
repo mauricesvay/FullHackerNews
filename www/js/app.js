@@ -23,7 +23,6 @@ window.App = {
     makeLastUpdateReadable: function() {
         var $lastUpdate = $('#lastupdate');
         var lastupdate = moment($lastUpdate.attr("title"));
-        console.log(lastupdate);
         $lastUpdate.html(lastupdate.fromNow());
     },
 
