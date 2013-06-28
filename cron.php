@@ -18,7 +18,7 @@ foreach ($argv as $arg) {
     }   
 }
 
-$fhn = new FullFeed(feedUrl);
+$fhn = new FullFeed(feedUrl, enableGzip);
 $new = $fhn->update();
 if ($force || ($new > 0)) {
     echo "$new new article(s)\n";

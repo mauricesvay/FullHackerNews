@@ -14,15 +14,19 @@ class FullFeed {
     private $outputFile;
     private $cacheFile;
 
+    private $enable_gzip;
+
     private $purifier;
     private $readability;
     private $feed;
     private $articles;
     private $mustache;
 
-    public function __construct($feedUrl) {
+    public function __construct($feedUrl, $enable_gzip) {
         $this->outputFile = dirname(__FILE__).'/www/index.html';
         $this->cacheFile = dirname(__FILE__).'/www/cache.manifest';
+
+        $this->enable_gzip = $enable_gzip;
 
         //Feed
         $this->feed = new SimplePie();
@@ -141,6 +145,10 @@ class FullFeed {
         //Minify HTML
         // $out = Minify_HTML::minify($out);
 
+        if ($this->enable_gzip) {
+            $out = gzencode($out);
+        }
+
         $index_ok = file_put_contents($this->outputFile, $out);
 
         //Generate cache manifest
@@ -162,11 +170,23 @@ class FullFeed {
     public function upload($awsAccessKey, $awsSecretKey, $awsS3BucketName) {
         $s3 = new S3($awsAccessKey, $awsSecretKey);
 
+        if ($this->enable_gzip) {
+            $index_headers = array(
+                "Content-Type" => "text/html",
+                "Content-Encoding" => "gzip"
+            );
+        } else {
+            $index_headers = array(
+                "Content-Type" => "text/html"
+            );
+        }
         $index_ok = $s3->putObjectFile(
                         $this->outputFile, 
                         $awsS3BucketName, 
                         baseName($this->outputFile), 
-                        S3::ACL_PUBLIC_READ
+                        S3::ACL_PUBLIC_READ,
+                        array(),
+                        $index_headers
                     );
         $manifest_ok = $s3->putObjectFile(
                         $this->cacheFile, 
