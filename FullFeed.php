@@ -8,6 +8,9 @@ include dirname(__FILE__).'/lib/simple_html_dom.php';
 include dirname(__FILE__).'/lib/minify-2.1.5/min/lib/Minify/HTML.php';
 include dirname(__FILE__)."/lib/amazon-s3-php-class/S3.php";
 include dirname(__FILE__)."/lib/mustache.php/src/Mustache/Autoloader.php";
+include dirname(__FILE__)."/lib/Requests/library/Requests.php";
+
+Requests::register_autoloader();
 
 class FullFeed {
 
@@ -72,7 +75,15 @@ class FullFeed {
                 //Do not download PDF or images
             } else {
                 if (false === ($html = FileSystemCache::retrieve($key))) {
-                    if ($html = file_get_contents($url)) {
+
+                    $response = Requests::get(
+                        $url, 
+                        array(), 
+                        array('verify' => false, 'verifyname' => false)
+                    );
+
+                    if ($response->success) {
+                        $html = $response->body;
                         FileSystemCache::store($key, $html);
                         $new++;
                     }
