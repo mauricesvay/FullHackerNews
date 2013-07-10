@@ -76,14 +76,22 @@ class FullFeed {
             } else {
                 if (false === ($html = FileSystemCache::retrieve($key))) {
 
-                    $response = Requests::get(
-                        $url, 
-                        array(), 
-                        array('verify' => false, 'verifyname' => false)
-                    );
+                    try {
+                        $response = Requests::get(
+                            $url, 
+                            array(), 
+                            array('verify' => false, 'verifyname' => false)
+                        );
+                        if ($response->success) {
+                            $html = $response->body;
+                        }
+                    } catch (Requests_Exception $e) {
+                        $exception_data = $e->getData();
+                        file_put_contents('php://stderr', "HTTP Error: " . $exception_data->status_code . " " . $url);
+                        $html = false;
+                    }
 
-                    if ($response->success) {
-                        $html = $response->body;
+                    if ($html) {
                         FileSystemCache::store($key, $html);
                         $new++;
                     }
