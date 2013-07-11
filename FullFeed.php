@@ -86,8 +86,9 @@ class FullFeed {
                             $html = $response->body;
                         }
                     } catch (Requests_Exception $e) {
-                        $exception_data = $e->getData();
-                        file_put_contents('php://stderr', "HTTP Error: " . $exception_data->status_code . " " . $url);
+                        $error = $e->getMessage();
+                        file_put_contents('php://stderr', "Download failed: " . $url . "\n");
+                        file_put_contents('php://stderr', $error . "\n");
                         $html = false;
                     }
 
