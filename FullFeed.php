@@ -5,7 +5,6 @@ include dirname(__FILE__)."/lib/htmlpurifier-4.5.0/library/HTMLPurifier.auto.php
 include dirname(__FILE__).'/lib/fivefilters-php-readability/Readability.php';
 include dirname(__FILE__).'/lib/url_to_absolute.php';
 include dirname(__FILE__).'/lib/simple_html_dom.php';
-include dirname(__FILE__).'/lib/minify-2.1.5/min/lib/Minify/HTML.php';
 include dirname(__FILE__)."/lib/amazon-s3-php-class/S3.php";
 include dirname(__FILE__)."/lib/mustache.php/src/Mustache/Autoloader.php";
 include dirname(__FILE__)."/lib/Requests/library/Requests.php";
@@ -161,9 +160,6 @@ class FullFeed {
             'articles' => $this->articles,
             'lastupdate' => $lastupdate
         ));
-        
-        //Minify HTML
-        // $out = Minify_HTML::minify($out);
 
         if ($this->enable_gzip) {
             $out = gzencode($out);
