@@ -85,10 +85,13 @@ class FullFeed {
                             $html = $response->body;
                         }
                     } catch (Requests_Exception $e) {
-                        $error = $e->getMessage();
-                        file_put_contents('php://stderr', "Download failed: " . $url . "\n");
-                        file_put_contents('php://stderr', $error . "\n");
-                        $html = false;
+                        $html = file_get_contents($url);
+                        if (!$html) {
+                            $error = $e->getMessage();
+                            file_put_contents('php://stderr', "Download failed: " . $url . "\n");
+                            file_put_contents('php://stderr', $error . "\n");
+                            $html = false;
+                        }
                     }
 
                     if ($html) {
