@@ -1,5 +1,5 @@
 .DS_Store
 /config.php
-www/index.html
-www/cache.manifest
+index.html
+cache.manifest
 cache/*
