@@ -174,7 +174,9 @@ class FullFeed {
         $cachedfiles = array();
         $path = dirname(__FILE__).'/www/';
         foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path)) as $filename) {
-            $cachedfiles[] = str_replace($path, "", $filename);
+            if (!preg_match("/\.{1,2}$/", $filename)) {
+                $cachedfiles[] = str_replace($path, "", $filename);
+            }
         }
         $tpl = $this->mustache->loadTemplate('fullhn.manifest');
         $out = $tpl->render(array(
