@@ -45,17 +45,28 @@ body {
     line-height: 1.5;
     background: #FFF;
     color: #2c3e50;
+    border-top: 6px solid #F60;
 }
 
+header,
 .main {
     max-width: 45em;
     margin: 0 auto;
 }
 
-header,
-header h1 {
-    text-align: center;
+header {
+    overflow: hidden;
+
 }
+    header h1 {
+        float: left;
+        font-size: 1.5em;
+    }
+    header p {
+        float: right;
+        margin-top: 1.25em;
+        color: #999;
+    }
 
 a {
     color: #2980b9;
@@ -65,7 +76,7 @@ a:visited {
 }
 
 .toc {
-    margin: 1em 0;
+    margin: 0 0 1em 0;
     padding: 0;
 }
     .toc li {
@@ -128,6 +139,11 @@ h1 a {
         max-width: 100%;
     }
 
+    hr {
+        border: 0;
+        border-top: 1px solid #EEE;
+    }
+
 .toolbar {
     position: fixed;
     bottom: 0;
@@ -165,3 +181,18 @@ footer {
         max-width: 45em;
         margin: 0 auto;
     }
+
+@media only screen and (max-width: 767px) and (orientation: portrait) {
+    header h1,
+    header p {
+        float: none;
+        text-align: center;
+        margin: 0.5em 0;
+    }
+    header h1 {
+        margin-bottom: 0;
+    }
+    pre {
+        font-size: 0.9em;
+    }
+}
