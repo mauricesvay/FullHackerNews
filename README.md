@@ -15,6 +15,7 @@ Can work with any other feed.
 * Create an S3 bucket, configured as a Web server
 * upload the content of `www` to the S3 bucket
 * copy `config-dist.php` to `config.php` and update the values
+* install dependencies : `$ php composer.phar install`
 * run `php cron.php` periodically
 * enjoy
 
