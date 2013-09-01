@@ -7,9 +7,10 @@ include dirname(__FILE__).'/lib/url_to_absolute.php';
 include dirname(__FILE__).'/lib/simple_html_dom.php';
 include dirname(__FILE__)."/lib/amazon-s3-php-class/S3.php";
 include dirname(__FILE__)."/lib/mustache.php/src/Mustache/Autoloader.php";
-include dirname(__FILE__)."/lib/Requests/library/Requests.php";
 
-Requests::register_autoloader();
+use Guzzle\Http\Client;
+use Guzzle\Plugin\Cookie\CookiePlugin;
+use Guzzle\Plugin\Cookie\CookieJar\ArrayCookieJar;
 
 class FullFeed {
 
@@ -23,6 +24,7 @@ class FullFeed {
     private $feed;
     private $articles;
     private $mustache;
+    private $cookiePlugin;
 
     public function __construct($feedUrl, $enable_gzip) {
         $this->outputFile = dirname(__FILE__).'/www/index.html';
@@ -48,6 +50,8 @@ class FullFeed {
             'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__).'/views'),
             'partials_loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__).'/views/partials')
         ));
+
+        $this->cookiePlugin = new CookiePlugin(new ArrayCookieJar());
     }
 
     public function update() {
@@ -76,22 +80,14 @@ class FullFeed {
                 if (false === ($html = FileSystemCache::retrieve($key))) {
 
                     try {
-                        $response = Requests::get(
-                            $url, 
-                            array(), 
-                            array('verify' => false, 'verifyname' => false)
-                        );
-                        if ($response->success) {
-                            $html = $response->body;
-                        }
-                    } catch (Requests_Exception $e) {
-                        $html = file_get_contents($url);
-                        if (!$html) {
-                            $error = $e->getMessage();
-                            file_put_contents('php://stderr', "Download failed: " . $url . "\n");
-                            file_put_contents('php://stderr', $error . "\n");
-                            $html = false;
-                        }
+                        $client = new Client($url);
+                        $client->addSubscriber($this->cookiePlugin);
+                        $response = $client->get()->send();
+                        $html = (string) $response->getBody();
+                    } catch (Exception $e) {
+                        $error = $e->getMessage();
+                        file_put_contents('php://stderr', "Download failed: " . $url . "\n");
+                        file_put_contents('php://stderr', $error . "\n");
                     }
 
                     if ($html) {

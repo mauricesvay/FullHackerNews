@@ -1,5 +1,6 @@
 <?php
 date_default_timezone_set('UTC');
+require 'vendor/autoload.php';
 include dirname(__FILE__)."/config.php";
 include dirname(__FILE__)."/FullFeed.php";
 
