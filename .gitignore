@@ -3,3 +3,4 @@
 index.html
 cache.manifest
 cache/*
+vendor/*
