@@ -69,6 +69,11 @@ class FullFeed {
             $site = $link_url_parts['host'];
             $title = $item->get_title();
             $content = "";
+            $html = "";
+
+            if (false !== strpos($url, '&amp;')) {
+                $url = html_entity_decode($url);
+            }
 
             //Download content
             $key_group = "html/" . substr($site, 0, 2);
@@ -171,9 +176,11 @@ class FullFeed {
         $cachedfiles = array();
         $path = dirname(__FILE__).'/www/';
         foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path)) as $filename) {
+            //exclude "." and ".."
             if (preg_match("/\.{1,2}$/", $filename)) {
                 continue;
             }
+            //exclude cache manifest file itself
             if ($this->cacheFile == $filename) {
                 continue;
             }
