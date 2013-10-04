@@ -26,6 +26,8 @@ class FullFeed {
     private $mustache;
     private $cookiePlugin;
 
+    const ARTICLE_MAXSIZE = 100000;
+
     public function __construct($feedUrl, $enable_gzip) {
         $this->outputFile = dirname(__FILE__).'/www/index.html';
         $this->cacheFile = dirname(__FILE__).'/www/cache.manifest';
@@ -79,6 +81,8 @@ class FullFeed {
             $key_group = "html/" . substr($site, 0, 2);
             $key = FileSystemCache::generateCacheKey($url, $key_group);
 
+            // echo "$url";
+
             if (preg_match('/(pdf|jpg|png|gif)$/', $url)) {
                 //Do not download PDF or images
             } else {
@@ -101,6 +105,13 @@ class FullFeed {
                         $new++;
                     }
                 }
+            }
+
+            // echo " | DL OK";
+
+            //Limit content size to be readability-fied
+            if (FullFeed::ARTICLE_MAXSIZE < strlen($html)) {
+                continue;
             }
 
             //Extract content
@@ -139,6 +150,8 @@ class FullFeed {
                 FileSystemCache::store($key, $content);
             }
 
+            // echo " | HTML OK";
+
             $i++;
             $this->articles[] = array(
                 'url' => $url,
@@ -150,6 +163,8 @@ class FullFeed {
                 'next' => ($i + 1),
                 'prev' => ($i - 1)
             );
+
+            // echo "\n";
         }
 
         return $new;
