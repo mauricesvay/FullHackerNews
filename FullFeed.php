@@ -98,7 +98,6 @@ class FullFeed {
                         $error = $e->getMessage();
                         file_put_contents('php://stderr', "Download failed: " . $url . "\n");
                         file_put_contents('php://stderr', $error . "\n");
-                        var_dump($error);
                     }
 
                     if ($html) {
