@@ -90,7 +90,7 @@ class FullFeed {
 
                     try {
                         $client = new Client($url);
-                        $client->setUserAgent('Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36');
+                        // $client->setUserAgent('Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36');
                         $client->addSubscriber($this->cookiePlugin);
                         $response = $client->get()->send();
                         $html = (string) $response->getBody();
@@ -98,6 +98,7 @@ class FullFeed {
                         $error = $e->getMessage();
                         file_put_contents('php://stderr', "Download failed: " . $url . "\n");
                         file_put_contents('php://stderr', $error . "\n");
+                        var_dump($error);
                     }
 
                     if ($html) {
