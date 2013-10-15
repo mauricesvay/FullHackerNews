@@ -56,6 +56,52 @@ class FullFeed {
         $this->cookiePlugin = new CookiePlugin(new ArrayCookieJar());
     }
 
+    private function fetch($url) {
+        $new = false;
+
+        if (false !== strpos($url, '&amp;')) {
+            $url = html_entity_decode($url);
+        }
+
+        $link_url_parts = parse_url($url);
+        $site = $link_url_parts['host'];
+
+        //Download content
+        $key_group = "html/" . substr($site, 0, 2);
+        $key = FileSystemCache::generateCacheKey($url, $key_group);
+
+        if (preg_match('/(pdf|jpg|png|gif)$/', $url)) {
+            //Do not download PDF or images
+            $html = "";
+        } else {
+            if (false === ($html = FileSystemCache::retrieve($key))) {
+
+                try {
+                    $client = new Client($url);
+                    // $client->setUserAgent('Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36');
+                    $client->addSubscriber($this->cookiePlugin);
+                    $response = $client->get()->send();
+                    $html = (string) $response->getBody();
+                } catch (Exception $e) {
+                    $error = $e->getMessage();
+                    file_put_contents('php://stderr', "Download failed: " . $url . "\n");
+                    file_put_contents('php://stderr', $error . "\n");
+                    $html = "";
+                }
+
+                if ($html) {
+                    FileSystemCache::store($key, $html);
+                    $new = true;
+                }
+            }
+        }
+
+        return array(
+            'html' => $html,
+            'new' => $new
+        );
+    }
+
     public function update() {
         if (!$this->feed->init()) {
             echo "Error fetching feed : ",$this->feed->error , "\n";
@@ -73,41 +119,9 @@ class FullFeed {
             $content = "";
             $html = "";
 
-            if (false !== strpos($url, '&amp;')) {
-                $url = html_entity_decode($url);
-            }
-
-            //Download content
-            $key_group = "html/" . substr($site, 0, 2);
-            $key = FileSystemCache::generateCacheKey($url, $key_group);
-
-            // echo "$url";
-
-            if (preg_match('/(pdf|jpg|png|gif)$/', $url)) {
-                //Do not download PDF or images
-            } else {
-                if (false === ($html = FileSystemCache::retrieve($key))) {
-
-                    try {
-                        $client = new Client($url);
-                        // $client->setUserAgent('Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36');
-                        $client->addSubscriber($this->cookiePlugin);
-                        $response = $client->get()->send();
-                        $html = (string) $response->getBody();
-                    } catch (Exception $e) {
-                        $error = $e->getMessage();
-                        file_put_contents('php://stderr', "Download failed: " . $url . "\n");
-                        file_put_contents('php://stderr', $error . "\n");
-                    }
-
-                    if ($html) {
-                        FileSystemCache::store($key, $html);
-                        $new++;
-                    }
-                }
-            }
-
-            // echo " | DL OK";
+            $html = $this->fetch($url);
+            $new += (int) $html['new'];
+            $html = $html['html'];
 
             //Limit content size to be readability-fied
             if (FullFeed::ARTICLE_MAXSIZE < strlen($html)) {
