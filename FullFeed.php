@@ -56,7 +56,11 @@ class FullFeed {
         $this->cookiePlugin = new CookiePlugin(new ArrayCookieJar());
     }
 
-    private function fetch($url) {
+    private function fetch($url, $options = array()) {
+        $defaults = array(
+            'useragent' => ''
+        );
+        $options = array_merge($defaults, $options);
         $new = false;
 
         if (false !== strpos($url, '&amp;')) {
@@ -78,7 +82,9 @@ class FullFeed {
 
                 try {
                     $client = new Client($url);
-                    // $client->setUserAgent('Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36');
+                    if ($options['useragent']) {
+                        $client->setUserAgent($options['useragent']);
+                    }
                     $client->addSubscriber($this->cookiePlugin);
                     $response = $client->get()->send();
                     $html = (string) $response->getBody();
@@ -122,6 +128,19 @@ class FullFeed {
             $html = $this->fetch($url);
             $new += (int) $html['new'];
             $html = $html['html'];
+
+            //No luck ? Try as Google Chrome
+            if (!$html) {
+                $chromeUserAgentString = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36';
+                $html = $this->fetch(
+                    $url,
+                    array(
+                        'useragent' => $chromeUserAgentString
+                    )
+                );
+                $new += (int) $html['new'];
+                $html = $html['html'];
+            }
 
             //Limit content size to be readability-fied
             if (FullFeed::ARTICLE_MAXSIZE < strlen($html)) {
