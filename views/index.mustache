@@ -11,9 +11,14 @@
     {{> head }}
 </head>
 <body>
+<div id="reload">
+    <a href=".">New articles available</a>
+</div>
 <header>
     <h1>Full {{ title }}</h1>
-    <p>Last update: <span id="lastupdate" title="{{lastupdate}}">{{lastupdate}}</span></p>
+    <p>
+        Last update: <span id="lastupdate" title="{{lastupdate}}">{{lastupdate}}</span>
+    </p>
 </header>
 <div role="main" class="main">
     <ul class="toc" id="toc">

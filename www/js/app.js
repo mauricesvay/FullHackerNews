@@ -7,6 +7,17 @@ window.App = {
         App.nbArticles = $('.hn-article').length;
         this.makeLastUpdateReadable();
         this.buildNavigation();
+        this.checkCache();
+    },
+
+    checkCache : function() {
+        window.applicationCache.addEventListener('updateready', function(e) {
+            if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
+                $('#reload').show();
+            } else {
+                // Manifest didn't changed. Nothing new to server.
+            }
+        }, false);
     },
 
     scrollToIndex : function(idx) {
