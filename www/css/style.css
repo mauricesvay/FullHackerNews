@@ -73,7 +73,8 @@ a {
 a:visited {
     color: #8e44ad;
 }
-#reload {
+#reload,
+.loader {
     display: none;
 }
     #reload a {

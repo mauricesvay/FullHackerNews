@@ -11,13 +11,33 @@ window.App = {
     },
 
     checkCache : function() {
-        window.applicationCache.addEventListener('updateready', function(e) {
-            if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
+        var appCache = window.applicationCache;
+        appCache.addEventListener('cached', App.handleCacheEvent, false);
+        appCache.addEventListener('checking', App.handleCacheEvent, false);
+        appCache.addEventListener('downloading', App.handleCacheEvent, false);
+        appCache.addEventListener('error', App.handleCacheError, false);
+        appCache.addEventListener('noupdate', App.handleCacheEvent, false);
+        appCache.addEventListener('obsolete', App.handleCacheEvent, false);
+        appCache.addEventListener('progress', App.handleCacheEvent, false);
+        appCache.addEventListener('updateready', App.handleCacheEvent, false);
+    },
+
+    handleCacheError: function() {
+        $('.loader').hide();
+    },
+    handleCacheEvent: function() {
+        switch (window.applicationCache.status) {
+            case window.applicationCache.CHECKING:
+            case window.applicationCache.DOWNLOADING:
+                $('.loader').show();
+                break;
+            case window.applicationCache.UPDATEREADY:
+                $('.loader').hide();
                 $('#reload').show();
-            } else {
-                // Manifest didn't changed. Nothing new to server.
-            }
-        }, false);
+                break;
+            default :
+                $('.loader').hide();
+        }
     },
 
     scrollToIndex : function(idx) {
