@@ -122,6 +122,14 @@ class FullFeed {
             $link_url_parts = parse_url($link);
             $site = $link_url_parts['host'];
             $title = $item->get_title();
+
+            $comments = "";
+            $description = str_get_html($item->get_description());
+            $comment_link = $description->find('a');
+            if (count($comment_link)) {
+                $comments = $comment_link[0]->href;
+            }
+            
             $content = "";
             $html = "";
 
@@ -192,6 +200,7 @@ class FullFeed {
                 'site' => $site,
                 'title' => $title,
                 'content' => $content,
+                'comments' => $comments,
                 'index' => $i,
                 'next' => ($i + 1),
                 'prev' => ($i - 1)
