@@ -86,7 +86,8 @@ class FullFeed {
                         $client->setUserAgent($options['useragent']);
                     }
                     $client->addSubscriber($this->cookiePlugin);
-                    $response = $client->get()->send();
+                    // $response = $client->get()->send();
+                    $response = $client->get(null, array(), array('cert' => __DIR__.'/lib/cacert.pem'))->send();
                     $html = (string) $response->getBody();
                 } catch (Exception $e) {
                     $error = $e->getMessage();
