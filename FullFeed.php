@@ -165,7 +165,7 @@ class FullFeed {
 
                 if (preg_match('/\.txt$/', $url)) {
                     //Content is a text file
-                    $content = "<pre>" . $html . "</pre>";
+                    $content = "<pre>" . htmlentities($html, ENT_QUOTES, "UTF-8") . "</pre>";
                 } else {
                     //Consider other content as HTML
                     $this->readability = new Readability($html, $url);
