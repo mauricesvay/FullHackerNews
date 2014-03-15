@@ -55,7 +55,7 @@ class FullFeed {
             'partials_loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__).'/views/partials')
         ));
 
-        $this->blacklist = file('blacklist.txt');
+        $this->blacklist = file(dirname(__FILE__).'/blacklist.txt');
 
         $this->cookiePlugin = new CookiePlugin(new ArrayCookieJar());
     }
