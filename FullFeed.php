@@ -26,6 +26,8 @@ class FullFeed {
     private $mustache;
     private $cookiePlugin;
 
+    private $blacklist;
+
     const ARTICLE_MAXSIZE = 100000;
 
     public function __construct($feedUrl, $enable_gzip) {
@@ -53,6 +55,8 @@ class FullFeed {
             'partials_loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__).'/views/partials')
         ));
 
+        $this->blacklist = file('blacklist.txt');
+
         $this->cookiePlugin = new CookiePlugin(new ArrayCookieJar());
     }
 
@@ -69,6 +73,15 @@ class FullFeed {
 
         $link_url_parts = parse_url($url);
         $site = $link_url_parts['host'];
+
+        //Don't fetch blacklisted domains
+        if (in_array($site, $this->blacklist)) {
+            error_log("$site is blacklisted");
+            return array(
+                'html' => "Full article is not available",
+                'new' => $new
+            );
+        }
 
         //Download content
         $key_group = "html/" . substr($site, 0, 2);
