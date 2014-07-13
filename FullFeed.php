@@ -142,7 +142,7 @@ class FullFeed {
             if (count($comment_link)) {
                 $comments = $comment_link[0]->href;
             }
-            
+
             $content = "";
             $html = "";
 
@@ -152,7 +152,7 @@ class FullFeed {
 
             //No luck ? Try as Google Chrome
             if (!$html) {
-                $chromeUserAgentString = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36';
+                $chromeUserAgentString = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36';
                 $html = $this->fetch(
                     $url,
                     array(
@@ -280,17 +280,17 @@ class FullFeed {
             );
         }
         $index_ok = $s3->putObjectFile(
-                        $this->outputFile, 
-                        $awsS3BucketName, 
-                        baseName($this->outputFile), 
+                        $this->outputFile,
+                        $awsS3BucketName,
+                        baseName($this->outputFile),
                         S3::ACL_PUBLIC_READ,
                         array(),
                         $index_headers
                     );
         $manifest_ok = $s3->putObjectFile(
-                        $this->cacheFile, 
-                        $awsS3BucketName, 
-                        baseName($this->cacheFile), 
+                        $this->cacheFile,
+                        $awsS3BucketName,
+                        baseName($this->cacheFile),
                         S3::ACL_PUBLIC_READ,
                         array(),
                         array(
