@@ -246,8 +246,8 @@ class FullFeed {
         $cachedfiles = array();
         $path = dirname(__FILE__).'/www/';
         foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path)) as $filename) {
-            //exclude "." and ".."
-            if (preg_match("/\.{1,2}$/", $filename)) {
+            //exclude dotfiles
+            if (preg_match("/^\./", basename($filename))) {
                 continue;
             }
             //exclude cache manifest file itself
