@@ -87,7 +87,7 @@ class FullFeed {
         $key_group = "html/" . substr($site, 0, 2);
         $key = FileSystemCache::generateCacheKey($url, $key_group);
 
-        if (preg_match('/(pdf|jpg|png|gif)$/', $url)) {
+        if (preg_match('/(pdf|jpg|png|gif|webm|mp4|mp3|mov)$/', $url)) {
             //Do not download PDF or images
             $html = "";
         } else {
