@@ -29,16 +29,16 @@
 
     {{# articles }}
     <article id="article-{{ index }}" class="hn-article" data-index="{{ index }}">
-        <p class="meta">
-            Original article on <a href="{{ link }}">{{ site }}</a>
-            -
-            &#x1f4ac; <a href="{{ comments }}" target="_blank">Comments on HN</a>
-        </p>
         <h1 class="title">
             <a href="{{ link }}">
                 {{ title }}
             </a>
         </h1>
+        <p class="meta">
+            <a href="{{ link }}">{{ site }}</a>
+            -
+            <a href="{{ comments }}" target="_blank">Comments</a>
+        </p>
         <div>
             {{{ content }}}
         </div>

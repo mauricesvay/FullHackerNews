@@ -37,6 +37,9 @@ button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}
 textarea{overflow:auto;vertical-align:top}
 table{border-collapse:collapse;border-spacing:0}
 
+/**
+ * General
+ ******************************************************************************/
 body {
     margin: 0;
     font-family: Avenir, sans-serif;
@@ -54,6 +57,9 @@ header,
     padding: 1em;
 }
 
+/**
+ * Header
+ ******************************************************************************/
 header {
     overflow: hidden;
 }
@@ -88,6 +94,10 @@ a:visited {
     #reload a:hover {
         background: #F40;
     }
+
+/**
+ * Table of contents
+ ******************************************************************************/
 .toc {
     margin: 0 0 1em 0;
     padding: 0;
@@ -102,21 +112,27 @@ a:visited {
         text-decoration: none;
     }
 
-/* Articles */
+/**
+ * Articles
+ ******************************************************************************/
 .hn-article {
     border-top: 3px solid #ecf0f1;
-    padding: 2em 0;
+    padding: 1em 0;
 }
 .title {
     line-height: 1.2em;
 }
-h1 a {
+.title a {
     color: #2c3e50;
     text-decoration: none;
+    font-size: 1em;
 }
-.meta,
+
+.meta {
+    font-size: 0.8em;
+    margin: 1em 0;
+}
 .meta a {
-    margin-bottom: 0;
     color: #7f8c8d;
 }
     blockquote {
@@ -157,6 +173,9 @@ h1 a {
         border-top: 1px solid #EEE;
     }
 
+/**
+ * Navigation
+ ******************************************************************************/
 .toolbar {
     position: fixed;
     bottom: 0;
@@ -185,16 +204,22 @@ h1 a {
         transform: translateY(1px);
     }
 
+/**
+ * Footer
+ ******************************************************************************/
 footer {
     background: #EEE;
     padding: 1em 1em 3em 1em;
-    margin: 0 -1em;
+    margin: 0;
 }
     footer div {
         max-width: 45em;
         margin: 0 auto;
     }
 
+/**
+ * Responsive
+ ******************************************************************************/
 @media only screen and (max-width: 767px) and (orientation: portrait) {
     header h1,
     header p {
@@ -207,5 +232,15 @@ footer {
     }
     pre {
         font-size: 0.9em;
+    }
+
+    h1 {
+        font-size: 1.25em;
+    }
+    h2 {
+        font-size: 1.15em;
+    }
+    h3 {
+        font-size: 1em;
     }
 }
