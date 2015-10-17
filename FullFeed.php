@@ -90,15 +90,15 @@ class FullFeed {
 
         if (preg_match('/(pdf|jpg|png|gif|webm|mp4|mp3|mov)$/', $url)) {
             //Do not download PDF or images
-            echo "Skipping $url (binary)\n";
+            echo "fetching skipped (binary)\n";
             $html = "";
         } else {
             if (false === ($html = FileSystemCache::retrieve($key))) {
 
                 if ($options['useragent'] !== '') {
-                    echo "Fetching $url with user agent\n";
+                    echo "fetching with user agent\n";
                 } else {
-                    echo "Fetching $url\n";
+                    echo "fetching\n";
                 }
 
                 try {
@@ -121,7 +121,7 @@ class FullFeed {
                     $new = true;
                 }
             } else {
-                echo "Using cache for $url\n";
+                echo "fetching skipped (cached)\n";
             }
         }
 
@@ -149,12 +149,17 @@ class FullFeed {
 
     protected function extractContent($url, $html) {
 
-        echo "Extracting $url\n";
         $content = '';
+
+        if ($html === '') {
+            echo "extracting skipped (empty)\n";
+            return $html;
+        }
 
         // Plain text
         if (preg_match('/\.txt$/', $url)) {
             //Content is a text file
+            echo "extracting (txt)\n";
             return "<pre>" . htmlentities($html, ENT_QUOTES, "UTF-8") . "</pre>";
         }
 
@@ -165,6 +170,7 @@ class FullFeed {
                 $dom = str_get_html($html);
                 $domNode = $dom->find($commonSite['path']);
                 if (count($domNode)) {
+                    echo "extracting (common site)\n";
                     $content = (string) $domNode[0];
                     break;
                 }
@@ -176,6 +182,7 @@ class FullFeed {
             $this->readability = new Readability($html, $url);
             $result = $this->readability->init();
             if ($result) {
+                echo "extracting (readability)\n";
                 $content = $this->readability->getContent()->innerHTML;
             } else {
                 $content = '';
@@ -213,6 +220,9 @@ class FullFeed {
                 $comments = $comment_link[0]->href;
             }
 
+            echo "-----------------------------------------------------------\n";
+            echo "Processing $url\n";
+
             $content = "";
             $html = "";
 
@@ -235,7 +245,7 @@ class FullFeed {
 
             //Limit content size to be readability-fied
             if (FullFeed::ARTICLE_MAXSIZE < strlen($html)) {
-                echo "Skipping $url (file size exceeded)\n";
+                echo "extracting skipped (filesizetoo large)\n";
                 continue;
             }
 
@@ -248,7 +258,7 @@ class FullFeed {
                 $content = $this->extractContent($url, $html);
                 FileSystemCache::store($key, $content);
             } else {
-                echo "Extraction cached for $url";
+                echo "extracting skipped (cached)\n";
             }
 
             $i++;
