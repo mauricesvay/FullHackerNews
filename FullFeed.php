@@ -28,7 +28,7 @@ class FullFeed {
 
     private $blacklist;
 
-    const ARTICLE_MAXSIZE = 100000;
+    const ARTICLE_MAXSIZE = 1024000;
 
     public function __construct($feedUrl, $enable_gzip) {
         $this->outputFile = dirname(__FILE__).'/www/index.html';
@@ -90,9 +90,16 @@ class FullFeed {
 
         if (preg_match('/(pdf|jpg|png|gif|webm|mp4|mp3|mov)$/', $url)) {
             //Do not download PDF or images
+            echo "Skipping $url (binary)\n";
             $html = "";
         } else {
             if (false === ($html = FileSystemCache::retrieve($key))) {
+
+                if ($options['useragent'] !== '') {
+                    echo "Fetching $url with user agent\n";
+                } else {
+                    echo "Fetching $url\n";
+                }
 
                 try {
                     $client = new Client($url);
@@ -113,6 +120,8 @@ class FullFeed {
                     FileSystemCache::store($key, $html);
                     $new = true;
                 }
+            } else {
+                echo "Using cache for $url\n";
             }
         }
 
@@ -122,35 +131,7 @@ class FullFeed {
         );
     }
 
-    protected function extractContent($url, $html) {
-
-        // Plain text
-        if (preg_match('/\.txt$/', $url)) {
-            //Content is a text file
-            return "<pre>" . htmlentities($html, ENT_QUOTES, "UTF-8") . "</pre>";
-        }
-
-        // Check common sites where content structure is known
-        foreach ($this->commonSites as $commonSite) {
-            $isCommonSite = preg_match($commonSite['pattern'], $url);
-            if ($isCommonSite) {
-                $dom = str_get_html($html);
-                $domNode = $dom->find($commonSite['path']);
-                if (count($domNode)) {
-                    return (string) $domNode[0];
-                }
-            }
-        }
-
-        // Use Readability for all other content
-        $this->readability = new Readability($html, $url);
-        $result = $this->readability->init();
-        if ($result) {
-            $content = $this->purifier->purify($this->readability->getContent()->innerHTML);
-        } else {
-            $content = '';
-        }
-
+    protected function relativeImagesToAbsolute($url, $content) {
         //Resolve relative URL for images
         $html = str_get_html($content, /*$lowercase=*/true, /*$forceTagsClosed=*/true, /*$target_charset = */DEFAULT_TARGET_CHARSET, /*$stripRN=*/false); //Preserve white space
         if ($html) {
@@ -161,6 +142,50 @@ class FullFeed {
                 }
             }
             $content = (string) $html;
+        }
+
+        return $content;
+    }
+
+    protected function extractContent($url, $html) {
+
+        echo "Extracting $url\n";
+        $content = '';
+
+        // Plain text
+        if (preg_match('/\.txt$/', $url)) {
+            //Content is a text file
+            return "<pre>" . htmlentities($html, ENT_QUOTES, "UTF-8") . "</pre>";
+        }
+
+        // Try with common sites list
+        foreach ($this->commonSites as $commonSite) {
+            $isCommonSite = preg_match($commonSite['pattern'], $url);
+            if ($isCommonSite) {
+                $dom = str_get_html($html);
+                $domNode = $dom->find($commonSite['path']);
+                if (count($domNode)) {
+                    $content = (string) $domNode[0];
+                    break;
+                }
+            }
+        }
+
+        // Try with Readability
+        if ($content === '') {
+            $this->readability = new Readability($html, $url);
+            $result = $this->readability->init();
+            if ($result) {
+                $content = $this->readability->getContent()->innerHTML;
+            } else {
+                $content = '';
+            }
+        }
+
+        // Cleanup content
+        if ($content !== '') {
+            $content = $this->relativeImagesToAbsolute($url, $content);
+            $content = $this->purifier->purify($content);
         }
 
         return $content;
@@ -210,6 +235,7 @@ class FullFeed {
 
             //Limit content size to be readability-fied
             if (FullFeed::ARTICLE_MAXSIZE < strlen($html)) {
+                echo "Skipping $url (file size exceeded)\n";
                 continue;
             }
 
@@ -221,6 +247,8 @@ class FullFeed {
             if (false === ($content = FileSystemCache::retrieve($key))) {
                 $content = $this->extractContent($url, $html);
                 FileSystemCache::store($key, $content);
+            } else {
+                echo "Extraction cached for $url";
             }
 
             $i++;
