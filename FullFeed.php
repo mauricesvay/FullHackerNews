@@ -56,6 +56,7 @@ class FullFeed {
         ));
 
         $this->blacklist = file(dirname(__FILE__).'/blacklist.txt');
+        $this->commonSites = json_decode(file_get_contents(dirname(__FILE__).'/common-sites.json'), true);
 
         $this->cookiePlugin = new CookiePlugin(new ArrayCookieJar());
     }
@@ -122,30 +123,44 @@ class FullFeed {
     }
 
     protected function extractContent($url, $html) {
+
+        // Plain text
         if (preg_match('/\.txt$/', $url)) {
             //Content is a text file
-            $content = "<pre>" . htmlentities($html, ENT_QUOTES, "UTF-8") . "</pre>";
-        } else {
-            //Consider other content as HTML
-            $this->readability = new Readability($html, $url);
-            $result = $this->readability->init();
-            if ($result) {
-                $content = $this->purifier->purify($this->readability->getContent()->innerHTML);
-            } else {
-                $content = '';
-            }
+            return "<pre>" . htmlentities($html, ENT_QUOTES, "UTF-8") . "</pre>";
+        }
 
-            //Resolve relative URL for images
-            $html = str_get_html($content, /*$lowercase=*/true, /*$forceTagsClosed=*/true, /*$target_charset = */DEFAULT_TARGET_CHARSET, /*$stripRN=*/false); //Preserve white space
-            if ($html) {
-                $imgs = $html->find('img');
-                foreach ($imgs as $img) {
-                    if (!preg_match('/^http(s*):\/\//', $img->src)) {
-                        $img->src = url_to_absolute($url, $img->src);
-                    }
+        // Check common sites where content structure is known
+        foreach ($this->commonSites as $commonSite) {
+            $isCommonSite = preg_match($commonSite['pattern'], $url);
+            if ($isCommonSite) {
+                $dom = str_get_html($html);
+                $domNode = $dom->find($commonSite['path']);
+                if (count($domNode)) {
+                    return (string) $domNode[0];
                 }
-                $content = (string) $html;
             }
+        }
+
+        // Use Readability for all other content
+        $this->readability = new Readability($html, $url);
+        $result = $this->readability->init();
+        if ($result) {
+            $content = $this->purifier->purify($this->readability->getContent()->innerHTML);
+        } else {
+            $content = '';
+        }
+
+        //Resolve relative URL for images
+        $html = str_get_html($content, /*$lowercase=*/true, /*$forceTagsClosed=*/true, /*$target_charset = */DEFAULT_TARGET_CHARSET, /*$stripRN=*/false); //Preserve white space
+        if ($html) {
+            $imgs = $html->find('img');
+            foreach ($imgs as $img) {
+                if (!preg_match('/^http(s*):\/\//', $img->src)) {
+                    $img->src = url_to_absolute($url, $img->src);
+                }
+            }
+            $content = (string) $html;
         }
 
         return $content;
@@ -208,8 +223,6 @@ class FullFeed {
                 FileSystemCache::store($key, $content);
             }
 
-            // echo " | HTML OK";
-
             $i++;
             $this->articles[] = array(
                 'url' => $url,
@@ -222,8 +235,6 @@ class FullFeed {
                 'next' => ($i + 1),
                 'prev' => ($i - 1)
             );
-
-            // echo "\n";
         }
 
         return $new;

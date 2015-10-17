@@ -1,0 +1,7 @@
+[
+  {
+    "name": "github",
+    "pattern": "\/http(s)?:\\\/\\\/github.com\\\/([^\\\/]+)\\\/([^\\\/]+)\/",
+    "path": "#readme > article.entry-content"
+  }
+]
