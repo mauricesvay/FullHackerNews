@@ -121,6 +121,36 @@ class FullFeed {
         );
     }
 
+    protected function extractContent($url, $html) {
+        if (preg_match('/\.txt$/', $url)) {
+            //Content is a text file
+            $content = "<pre>" . htmlentities($html, ENT_QUOTES, "UTF-8") . "</pre>";
+        } else {
+            //Consider other content as HTML
+            $this->readability = new Readability($html, $url);
+            $result = $this->readability->init();
+            if ($result) {
+                $content = $this->purifier->purify($this->readability->getContent()->innerHTML);
+            } else {
+                $content = '';
+            }
+
+            //Resolve relative URL for images
+            $html = str_get_html($content, /*$lowercase=*/true, /*$forceTagsClosed=*/true, /*$target_charset = */DEFAULT_TARGET_CHARSET, /*$stripRN=*/false); //Preserve white space
+            if ($html) {
+                $imgs = $html->find('img');
+                foreach ($imgs as $img) {
+                    if (!preg_match('/^http(s*):\/\//', $img->src)) {
+                        $img->src = url_to_absolute($url, $img->src);
+                    }
+                }
+                $content = (string) $html;
+            }
+        }
+
+        return $content;
+    }
+
     public function update() {
         if (!$this->feed->init()) {
             echo "Error fetching feed : ",$this->feed->error , "\n";
@@ -174,33 +204,7 @@ class FullFeed {
             $key = FileSystemCache::generateCacheKey($url, $key_group);
 
             if (false === ($content = FileSystemCache::retrieve($key))) {
-
-                if (preg_match('/\.txt$/', $url)) {
-                    //Content is a text file
-                    $content = "<pre>" . htmlentities($html, ENT_QUOTES, "UTF-8") . "</pre>";
-                } else {
-                    //Consider other content as HTML
-                    $this->readability = new Readability($html, $url);
-                    $result = $this->readability->init();
-                    if ($result) {
-                        $content = $this->purifier->purify($this->readability->getContent()->innerHTML);
-                    } else {
-                        $content = '';
-                    }
-
-                    //Resolve relative URL for images
-                    $html = str_get_html($content, /*$lowercase=*/true, /*$forceTagsClosed=*/true, /*$target_charset = */DEFAULT_TARGET_CHARSET, /*$stripRN=*/false); //Preserve white space
-                    if ($html) {
-                        $imgs = $html->find('img');
-                        foreach ($imgs as $img) {
-                            if (!preg_match('/^http(s*):\/\//', $img->src)) {
-                                $img->src = url_to_absolute($url, $img->src);
-                            }
-                        }
-                        $content = (string) $html;
-                    }
-                }
-
+                $content = $this->extractContent($url, $html);
                 FileSystemCache::store($key, $content);
             }
 
