@@ -15,6 +15,7 @@ use Guzzle\Plugin\Cookie\CookieJar\ArrayCookieJar;
 class FullFeed {
 
     private $outputFile;
+    private $latestFile;
     private $cacheFile;
 
     private $enable_gzip;
@@ -32,6 +33,7 @@ class FullFeed {
 
     public function __construct($feedUrl, $enable_gzip) {
         $this->outputFile = dirname(__FILE__).'/www/index.html';
+        $this->latestFile = dirname(__FILE__).'/www/latest.html';
         $this->cacheFile = dirname(__FILE__).'/www/cache.manifest';
 
         $this->enable_gzip = $enable_gzip;
@@ -295,6 +297,20 @@ class FullFeed {
 
         $index_ok = file_put_contents($this->outputFile, $out);
 
+        //Generate latest.html
+        $tpl = $this->mustache->loadTemplate('latest');
+        $out = $tpl->render(array(
+            'title' => $this->feed->get_title(),
+            'articles' => $this->articles,
+            'lastupdate' => $lastupdate
+        ));
+
+        if ($this->enable_gzip) {
+            $out = gzencode($out);
+        }
+
+        $latest_ok = file_put_contents($this->latestFile, $out);
+
         //Generate cache manifest
         $cachedfiles = array();
         $path = dirname(__FILE__).'/www/';
@@ -336,6 +352,14 @@ class FullFeed {
                         $this->outputFile,
                         $awsS3BucketName,
                         baseName($this->outputFile),
+                        S3::ACL_PUBLIC_READ,
+                        array(),
+                        $index_headers
+                    );
+        $latest_ok = $s3->putObjectFile(
+                        $this->latestFile,
+                        $awsS3BucketName,
+                        baseName($this->latestFile),
                         S3::ACL_PUBLIC_READ,
                         array(),
                         $index_headers

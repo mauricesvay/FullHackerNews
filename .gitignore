@@ -1,6 +1,7 @@
 .DS_Store
 /config.php
 index.html
+latest.html
 cache.manifest
 cache/*
 vendor/*
