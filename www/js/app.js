@@ -42,9 +42,11 @@ window.App = {
 
     scrollToIndex : function(idx) {
         var selector = '.hn-article[data-index='+idx+']';
+        var focusSelector = selector + ' > .title a';
         if ($('.hn-article[data-index='+idx+']').length) {
             var scroll = $(selector).position().top;
             $(window).scrollTop(scroll);
+            $(focusSelector).focus();
             setTimeout(function(){
                 App.current = idx;
             }, 100);
@@ -79,6 +81,7 @@ window.App = {
         $('#index').on('click', function(e) {
             e.preventDefault();
             $(window).scrollTop(0);
+            $('#toc a').first().focus();
         });
     }
 };
