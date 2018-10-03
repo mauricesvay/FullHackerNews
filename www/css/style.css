@@ -143,7 +143,6 @@ a:visited {
 
     table {
         border: 1px solid #EEE;
-        table-layout: fixed;
         width: 100%;
     }
     tr {
