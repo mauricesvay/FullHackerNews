@@ -1,18 +1,19 @@
 <?php
-include dirname(__FILE__)."/lib/SimplePie.compiled.php";
-include dirname(__FILE__)."/lib/FileSystemCache/lib/FileSystemCache.php";
-include dirname(__FILE__)."/lib/htmlpurifier-4.5.0/library/HTMLPurifier.auto.php";
-include dirname(__FILE__).'/lib/fivefilters-php-readability/Readability.php';
-include dirname(__FILE__).'/lib/url_to_absolute.php';
-include dirname(__FILE__).'/lib/simple_html_dom.php';
-include dirname(__FILE__)."/lib/amazon-s3-php-class/S3.php";
-include dirname(__FILE__)."/lib/mustache.php/src/Mustache/Autoloader.php";
+include __DIR__ . "/lib/SimplePie.compiled.php";
+include __DIR__ . "/lib/FileSystemCache/lib/FileSystemCache.php";
+include __DIR__ . "/lib/htmlpurifier-4.5.0/library/HTMLPurifier.auto.php";
+include __DIR__ . '/lib/fivefilters-php-readability/Readability.php';
+include __DIR__ . '/lib/url_to_absolute.php';
+include __DIR__ . '/lib/simple_html_dom.php';
+include __DIR__ . "/lib/amazon-s3-php-class/S3.php";
+include __DIR__ . "/lib/mustache.php/src/Mustache/Autoloader.php";
 
 use Guzzle\Http\Client;
-use Guzzle\Plugin\Cookie\CookiePlugin;
 use Guzzle\Plugin\Cookie\CookieJar\ArrayCookieJar;
+use Guzzle\Plugin\Cookie\CookiePlugin;
 
-class FullFeed {
+class FullFeed
+{
 
     private $outputFile;
     private $latestFile;
@@ -31,41 +32,43 @@ class FullFeed {
 
     const ARTICLE_MAXSIZE = 1024000;
 
-    public function __construct($feedUrl, $enable_gzip) {
-        $this->outputFile = dirname(__FILE__).'/www/index.html';
-        $this->latestFile = dirname(__FILE__).'/www/latest.html';
-        $this->cacheFile = dirname(__FILE__).'/www/cache.manifest';
+    public function __construct($feedUrl, $enable_gzip)
+    {
+        $this->outputFile = __DIR__ . '/www/index.html';
+        $this->latestFile = __DIR__ . '/www/latest.html';
+        $this->cacheFile = __DIR__ . '/www/cache.manifest';
 
         $this->enable_gzip = $enable_gzip;
 
         //Feed
         $this->feed = new SimplePie();
         $this->feed->set_cache_duration(600);
-        $this->feed->set_cache_location(dirname(__FILE__).'/cache');
+        $this->feed->set_cache_location(__DIR__ . '/cache');
         $this->feed->set_feed_url($feedUrl);
 
         //HTML Purifier
         $config = HTMLPurifier_Config::createDefault();
         $config->set('HTML.TidyLevel', 'heavy');
-        $config->set('HTML.ForbiddenElements', array('style','script','link'));
+        $config->set('HTML.ForbiddenElements', array('style', 'script', 'link'));
         $this->purifier = new HTMLPurifier($config);
 
         //Mustache
         Mustache_Autoloader::register();
         $this->mustache = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__).'/views'),
-            'partials_loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__).'/views/partials')
+            'loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/views'),
+            'partials_loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/views/partials'),
         ));
 
-        $this->blacklist = file(dirname(__FILE__).'/blacklist.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        $this->commonSites = json_decode(file_get_contents(dirname(__FILE__).'/common-sites.json'), true);
+        $this->blacklist = file(__DIR__ . '/blacklist.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $this->commonSites = json_decode(file_get_contents(__DIR__ . '/common-sites.json'), true);
 
         $this->cookiePlugin = new CookiePlugin(new ArrayCookieJar());
     }
 
-    private function fetch($url, $options = array()) {
+    private function fetch($url, $options = array())
+    {
         $defaults = array(
-            'useragent' => ''
+            'useragent' => '',
         );
         $options = array_merge($defaults, $options);
         $new = false;
@@ -82,7 +85,7 @@ class FullFeed {
             error_log("$site is blacklisted");
             return array(
                 'html' => "Full article is not available",
-                'new' => $new
+                'new' => $new,
             );
         }
 
@@ -129,11 +132,12 @@ class FullFeed {
 
         return array(
             'html' => $html,
-            'new' => $new
+            'new' => $new,
         );
     }
 
-    protected function relativeImagesToAbsolute($url, $content) {
+    protected function relativeImagesToAbsolute($url, $content)
+    {
         //Resolve relative URL for images
         $html = str_get_html($content, /*$lowercase=*/true, /*$forceTagsClosed=*/true, /*$target_charset = */DEFAULT_TARGET_CHARSET, /*$stripRN=*/false); //Preserve white space
         if ($html) {
@@ -149,7 +153,8 @@ class FullFeed {
         return $content;
     }
 
-    protected function extractContent($url, $html) {
+    protected function extractContent($url, $html)
+    {
 
         $content = '';
 
@@ -200,9 +205,10 @@ class FullFeed {
         return $content;
     }
 
-    public function update() {
+    public function update()
+    {
         if (!$this->feed->init()) {
-            echo "Error fetching feed : ",$this->feed->error , "\n";
+            echo "Error fetching feed : ", $this->feed->error, "\n";
             exit;
         }
 
@@ -238,7 +244,7 @@ class FullFeed {
                 $html = $this->fetch(
                     $url,
                     array(
-                        'useragent' => $chromeUserAgentString
+                        'useragent' => $chromeUserAgentString,
                     )
                 );
                 $new += (int) $html['new'];
@@ -273,14 +279,15 @@ class FullFeed {
                 'comments' => $comments,
                 'index' => $i,
                 'next' => ($i + 1),
-                'prev' => ($i - 1)
+                'prev' => ($i - 1),
             );
         }
 
         return $new;
     }
 
-    public function generateOutput() {
+    public function generateOutput()
+    {
         $lastupdate = date('r');
 
         //Generate index.html
@@ -288,7 +295,7 @@ class FullFeed {
         $out = $tpl->render(array(
             'title' => $this->feed->get_title(),
             'articles' => $this->articles,
-            'lastupdate' => $lastupdate
+            'lastupdate' => $lastupdate,
         ));
 
         if ($this->enable_gzip) {
@@ -302,7 +309,7 @@ class FullFeed {
         $out = $tpl->render(array(
             'title' => $this->feed->get_title(),
             'articles' => $this->articles,
-            'lastupdate' => $lastupdate
+            'lastupdate' => $lastupdate,
         ));
 
         if ($this->enable_gzip) {
@@ -313,7 +320,7 @@ class FullFeed {
 
         //Generate cache manifest
         $cachedfiles = array();
-        $path = dirname(__FILE__).'/www/';
+        $path = __DIR__ . '/www/';
         foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path)) as $filename) {
             //exclude dotfiles
             if (preg_match("/^\./", basename($filename))) {
@@ -328,52 +335,53 @@ class FullFeed {
         $tpl = $this->mustache->loadTemplate('fullhn.manifest');
         $out = $tpl->render(array(
             'version' => $lastupdate,
-            'cachedfiles' => implode("\n", $cachedfiles)
+            'cachedfiles' => implode("\n", $cachedfiles),
         ));
         $manifest_ok = file_put_contents($this->cacheFile, $out);
 
         return $index_ok && $manifest_ok;
     }
 
-    public function upload($awsAccessKey, $awsSecretKey, $awsS3BucketName) {
+    public function upload($awsAccessKey, $awsSecretKey, $awsS3BucketName)
+    {
         $s3 = new S3($awsAccessKey, $awsSecretKey);
 
         if ($this->enable_gzip) {
             $index_headers = array(
                 "Content-Type" => "text/html",
-                "Content-Encoding" => "gzip"
+                "Content-Encoding" => "gzip",
             );
         } else {
             $index_headers = array(
-                "Content-Type" => "text/html"
+                "Content-Type" => "text/html",
             );
         }
         $index_ok = $s3->putObjectFile(
-                        $this->outputFile,
-                        $awsS3BucketName,
-                        baseName($this->outputFile),
-                        S3::ACL_PUBLIC_READ,
-                        array(),
-                        $index_headers
-                    );
+            $this->outputFile,
+            $awsS3BucketName,
+            baseName($this->outputFile),
+            S3::ACL_PUBLIC_READ,
+            array(),
+            $index_headers
+        );
         $latest_ok = $s3->putObjectFile(
-                        $this->latestFile,
-                        $awsS3BucketName,
-                        baseName($this->latestFile),
-                        S3::ACL_PUBLIC_READ,
-                        array(),
-                        $index_headers
-                    );
+            $this->latestFile,
+            $awsS3BucketName,
+            baseName($this->latestFile),
+            S3::ACL_PUBLIC_READ,
+            array(),
+            $index_headers
+        );
         $manifest_ok = $s3->putObjectFile(
-                        $this->cacheFile,
-                        $awsS3BucketName,
-                        baseName($this->cacheFile),
-                        S3::ACL_PUBLIC_READ,
-                        array(),
-                        array(
-                            "Content-Type" => "text/cache-manifest"
-                        )
-                    );
+            $this->cacheFile,
+            $awsS3BucketName,
+            baseName($this->cacheFile),
+            S3::ACL_PUBLIC_READ,
+            array(),
+            array(
+                "Content-Type" => "text/cache-manifest",
+            )
+        );
         return $index_ok && $manifest_ok;
     }
 }

@@ -1,10 +1,10 @@
 <?php
 date_default_timezone_set('UTC');
 require 'vendor/autoload.php';
-include dirname(__FILE__)."/config.php";
-include dirname(__FILE__)."/FullFeed.php";
+include __DIR__ . "/config.php";
+include __DIR__ . "/FullFeed.php";
 
-FileSystemCache::$cacheDir = dirname(__FILE__).'/cache';
+FileSystemCache::$cacheDir = __DIR__ . '/cache';
 $new = 0;
 $force = false;
 
@@ -16,7 +16,7 @@ foreach ($argv as $arg) {
                 $force = true;
                 break;
         }
-    }   
+    }
 }
 
 $fhn = new FullFeed(feedUrl, enableGzip);
@@ -31,6 +31,6 @@ if ($force || ($new > 0)) {
     if ($fhn->upload(awsAccessKey, awsSecretKey, awsS3BucketName)) {
         echo "Uploaded to S3 OK\n";
     } else {
-     echo "Error uploading to S3\n";
+        echo "Error uploading to S3\n";
     }
 }
