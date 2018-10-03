@@ -192,6 +192,7 @@ class FullFeed
                 echo "extracting (readability)\n";
                 $content = $this->readability->getContent()->innerHTML;
             } else {
+                echo "Cannot extract content\n";
                 $content = '';
             }
         }
@@ -223,7 +224,9 @@ class FullFeed
 
             $comments = "";
             $description = str_get_html($item->get_description());
-            $comment_link = $description->find('a');
+            if ($description) {
+                $comment_link = $description->find('a');
+            }
             if (count($comment_link)) {
                 $comments = $comment_link[0]->href;
             }
