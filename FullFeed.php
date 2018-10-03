@@ -240,7 +240,7 @@ class FullFeed
 
             //No luck ? Try as Google Chrome
             if (!$html) {
-                $chromeUserAgentString = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36';
+                $chromeUserAgentString = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36';
                 $html = $this->fetch(
                     $url,
                     array(
