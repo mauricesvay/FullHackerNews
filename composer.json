@@ -1,5 +1,8 @@
 {
     "require": {
-        "guzzle/guzzle": "~3.7"
+        "mustache/mustache": "^2.12",
+        "ezyang/htmlpurifier": "^4.10",
+        "simplepie/simplepie": "^1.5",
+        "guzzlehttp/guzzle": "^6.3"
     }
 }

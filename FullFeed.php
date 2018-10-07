@@ -1,16 +1,10 @@
 <?php
-include __DIR__ . "/lib/SimplePie.compiled.php";
+require 'vendor/autoload.php';
 include __DIR__ . "/lib/FileSystemCache/lib/FileSystemCache.php";
-include __DIR__ . "/lib/htmlpurifier-4.5.0/library/HTMLPurifier.auto.php";
 include __DIR__ . '/lib/fivefilters-php-readability/Readability.php';
 include __DIR__ . '/lib/url_to_absolute.php';
 include __DIR__ . '/lib/simple_html_dom.php';
 include __DIR__ . "/lib/amazon-s3-php-class/S3.php";
-include __DIR__ . "/lib/mustache.php/src/Mustache/Autoloader.php";
-
-use Guzzle\Http\Client;
-use Guzzle\Plugin\Cookie\CookieJar\ArrayCookieJar;
-use Guzzle\Plugin\Cookie\CookiePlugin;
 
 class FullFeed
 {
@@ -26,7 +20,6 @@ class FullFeed
     private $feed;
     private $articles;
     private $mustache;
-    private $cookiePlugin;
 
     private $blacklist;
 
@@ -61,8 +54,6 @@ class FullFeed
 
         $this->blacklist = file(__DIR__ . '/blacklist.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         $this->commonSites = json_decode(file_get_contents(__DIR__ . '/common-sites.json'), true);
-
-        $this->cookiePlugin = new CookiePlugin(new ArrayCookieJar());
     }
 
     private function fetch($url, $options = array())
@@ -107,12 +98,16 @@ class FullFeed
                 }
 
                 try {
-                    $client = new Client($url);
+                    $client = new GuzzleHttp\Client(['cookies' => true]);
                     if ($options['useragent']) {
                         $client->setUserAgent($options['useragent']);
+                        $response = $client->request('GET', $url, [
+                            'headers' => [
+                                'User-Agent' => $options['useragent'],
+                            ],
+                        ]);
                     }
-                    $client->addSubscriber($this->cookiePlugin);
-                    $response = $client->get()->send();
+                    $response = $client->get($url);
                     $html = (string) $response->getBody();
                 } catch (Exception $e) {
                     $error = $e->getMessage();
@@ -232,7 +227,7 @@ class FullFeed
             }
 
             echo "-----------------------------------------------------------\n";
-            echo "Processing $url\n";
+            echo "$url\n";
 
             $content = "";
             $html = "";
