@@ -1,7 +1,12 @@
 [
   {
     "name": "github",
-    "pattern": "\/http(s)?:\\\/\\\/github.com\\\/([^\\\/]+)\\\/([^\\\/]+)\/",
+    "pattern": "/http(s)?:\\/\\/github.com\\/([^\\/]+)\\/([^\\/]+)/",
     "path": "#readme > article.entry-content"
+  },
+  {
+    "name": "tweet",
+    "pattern": "/http(s)?:\\/\\/twitter.com\\/(\\S+)\\/status\\/\\d+/",
+    "path": ".js-tweet-text-container > .TweetTextSize--jumbo"
   }
 ]
