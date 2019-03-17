@@ -4,8 +4,54 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "09a24d219772f880ef4823f70beb2eff",
+    "content-hash": "ad72297d5889c9f9250621c9923db3c4",
     "packages": [
+        {
+            "name": "euskadi31/opengraph",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/euskadi31/Opengraph.git",
+                "reference": "35645b1bbe9309f8b46734e3eb8f01e6613aeb52"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/euskadi31/Opengraph/zipball/35645b1bbe9309f8b46734e3eb8f01e6613aeb52",
+                "reference": "35645b1bbe9309f8b46734e3eb8f01e6613aeb52",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "atoum/atoum": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Opengraph": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Axel Etcheverry",
+                    "email": "axel@etcheverry.biz",
+                    "homepage": "http://www.axel-etcheverry.com"
+                }
+            ],
+            "description": "A PHP 5.3+ framework for OpenGraph Protocol",
+            "keywords": [
+                "OpenGraph Protocol",
+                "og",
+                "opengraph",
+                "sdk"
+            ],
+            "time": "2013-11-25T14:33:37+00:00"
+        },
         {
             "name": "ezyang/htmlpurifier",
             "version": "v4.10.0",
@@ -396,6 +442,54 @@
                 "rss"
             ],
             "time": "2018-08-02T05:43:58+00:00"
+        },
+        {
+            "name": "sunra/php-simple-html-dom-parser",
+            "version": "v1.5.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sunra/php-simple-html-dom-parser.git",
+                "reference": "75b9b1cb64502d8f8c04dc11b5906b969af247c6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sunra/php-simple-html-dom-parser/zipball/75b9b1cb64502d8f8c04dc11b5906b969af247c6",
+                "reference": "75b9b1cb64502d8f8c04dc11b5906b969af247c6",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.3.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Sunra\\PhpSimple\\HtmlDomParser": "Src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sunra",
+                    "email": "sunra@yandex.ru",
+                    "homepage": "https://github.com/sunra"
+                },
+                {
+                    "name": "S.C. Chen",
+                    "homepage": "http://sourceforge.net/projects/simplehtmldom/"
+                }
+            ],
+            "description": "Composer adaptation of: A HTML DOM parser written in PHP5+ let you manipulate HTML in a very easy way! Require PHP 5+. Supports invalid HTML. Find tags on an HTML page with selectors just like jQuery. Extract contents from HTML in a single line.",
+            "homepage": "https://github.com/sunra/php-simple-html-dom-parser",
+            "keywords": [
+                "dom",
+                "html",
+                "parser"
+            ],
+            "time": "2016-11-22T22:57:47+00:00"
         }
     ],
     "packages-dev": [],

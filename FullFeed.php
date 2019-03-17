@@ -6,6 +6,8 @@ include __DIR__ . '/lib/url_to_absolute.php';
 include __DIR__ . '/lib/simple_html_dom.php';
 include __DIR__ . "/lib/amazon-s3-php-class/S3.php";
 
+use Opengraph;
+
 class FullFeed
 {
 
@@ -173,6 +175,8 @@ class FullFeed
                 $domNode = $dom->find($commonSite['path']);
                 if (count($domNode)) {
                     echo "extracting (common site)\n";
+                    echo $commonSite['name'];
+                    echo "\n";
                     $content = (string) $domNode[0];
                     break;
                 }
@@ -267,6 +271,20 @@ class FullFeed
                 echo "extracting skipped (cached)\n";
             }
 
+            // Opengraph
+            $reader = new Opengraph\Reader();
+            $image = false;
+            try {
+
+                $reader->parse($html);
+                $og = $reader->getArrayCopy();
+                if (array_key_exists('og:image', $og) && is_array($og['og:image']) && count($og['og:image']) > 0) {
+                    $image = $og['og:image'][0]["og:image:url"];
+                }
+            } catch (\RuntimeException $e) {
+                error_log($e->getMessage());
+            }
+
             $i++;
             $this->articles[] = array(
                 'url' => $url,
@@ -275,6 +293,7 @@ class FullFeed
                 'title' => $title,
                 'content' => $content,
                 'comments' => $comments,
+                'image' => $image,
                 'index' => $i,
                 'next' => ($i + 1),
                 'prev' => ($i - 1),

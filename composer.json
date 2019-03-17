@@ -3,6 +3,8 @@
         "mustache/mustache": "^2.12",
         "ezyang/htmlpurifier": "^4.10",
         "simplepie/simplepie": "^1.5",
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6.3",
+        "sunra/php-simple-html-dom-parser": "^1.5",
+        "euskadi31/opengraph": "^1.0"
     }
 }

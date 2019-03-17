@@ -239,6 +239,35 @@ a:visited {
 .toc a {
     color: #2980b9;
     text-decoration: none;
+    display: flex;
+}
+
+.toc .preview {
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    background-size: cover;
+    background-position: center center;
+    background-color: #fff;
+    align-items: center;
+    border-radius: 2px;
+}
+
+.toc .info {
+    flex: 1 1 auto;
+    margin-left: 16px;
+}
+
+.toc .title {
+    display: block;
+    line-height: 24px;
+}
+
+.toc .site {
+    line-height: 24px;
+    text-decoration: none;
+    color: #999;
+    font-size: small;
 }
 
 /**

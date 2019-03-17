@@ -23,7 +23,20 @@
 <div role="main" class="main">
     <ul class="toc" id="toc">
     {{# articles }}
-        <li><a href="#article-{{ index }}">{{ title }}</a></li>
+        <li>
+            <a href="#article-{{ index }}">
+                {{# image }}
+                <span class="preview" style="background-image: url({{image}})"></span>
+                {{/ image }}
+                {{^ image }}
+                <span class="preview" style="background-color: #eee"></span>
+                {{/ image }}
+                <div class="info">
+                    <span class="title">{{ title }}</span>
+                    <span class="site">{{ site }}</span>
+                </div>
+            </a>
+        </li>
     {{/ articles}}
     </ul>
 

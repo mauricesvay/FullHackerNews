@@ -8,5 +8,10 @@
     "name": "tweet",
     "pattern": "/http(s)?:\\/\\/twitter.com\\/(\\S+)\\/status\\/\\d+/",
     "path": ".js-tweet-text-container > .TweetTextSize--jumbo"
+  },
+  {
+    "name": "tweet (mobile)",
+    "pattern": "/http(s)?:\\/\\/mobile.twitter.com\\/(\\S+)\\/status\\/\\d+/",
+    "path": "[data-testid='tweetDetail']"
   }
 ]
