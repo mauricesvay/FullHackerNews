@@ -33,7 +33,7 @@
                 {{/ image }}
                 <div class="info">
                     <span class="title">{{ title }}</span>
-                    <span class="site">{{ site }}</span>
+                    <span class="site">{{ domain }}</span>
                 </div>
             </a>
         </li>
@@ -43,17 +43,17 @@
     {{# articles }}
     <article id="article-{{ index }}" class="hn-article" data-index="{{ index }}">
         <h1 class="title">
-            <a href="{{ link }}">
+            <a href="{{ url }}">
                 {{ title }}
             </a>
         </h1>
         <p class="meta">
-            <a href="{{ link }}">{{ site }}</a>
+            <a href="{{ url }}">{{ domain }}</a>
             -
             <a href="{{ comments }}" target="_blank">Comments</a>
         </p>
         <div>
-            {{{ content }}}
+            {{{ parsed }}}
         </div>
     </article>
     {{/ articles}}
