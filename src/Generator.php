@@ -10,7 +10,11 @@ class Generator
             'partials_loader' => new \Mustache_Loader_FilesystemLoader(__DIR__ . '/templates/partials'),
         ));
         $tpl = $mustache->loadTemplate($template);
-        $out = $tpl->render(["articles" => $articles]);
+        $out = $tpl->render([
+            'title' => 'Hacker News',
+            'lastupdate' => date('r'),
+            "articles" => $articles
+        ]);
 
         if ($options["gzip"]) {
             $out = gzencode($out);
@@ -26,7 +30,7 @@ class Generator
             if (preg_match("/^\./", $basename) || $basename === 'cache.manifest' || $basename === 'latest.html') {
                 continue;
             }
-            $cachedfiles[] = basename($filename);
+            $cachedfiles[] = str_replace($path, "", $filename);
         }
 
         $mustache = new \Mustache_Engine(array(
