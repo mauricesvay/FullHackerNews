@@ -9,7 +9,7 @@ class Uploader
     public static function upload()
     {
 
-        $credentials = new \Aws\Credentials\Credentials(awsAccessKey, awsSecretKey);
+        $credentials = new \Aws\Credentials\Credentials(getenv('AWS_ACCESS_KEY_ID'), getenv('AWS_SECRET_ACCESS_KEY'));
 
         $s3 = new \Aws\S3\S3Client([
             'profile' => 'default',
@@ -20,21 +20,21 @@ class Uploader
 
         $files = [
             [
-                "Bucket" => awsS3BucketName,
+                "Bucket" => getenv('AWS_BUCKET'),
                 "Body" => file_get_contents(__DIR__ . "/../www/index.html"),
                 'Key' => "index.html",
                 "ContentType" => "text/html",
                 "ACL" => "public-read",
             ],
             [
-                "Bucket" => awsS3BucketName,
+                "Bucket" => getenv('AWS_BUCKET'),
                 "Body" => file_get_contents(__DIR__ . "/../www/latest.html"),
                 "Key" => "latest.html",
                 "ContentType" => "text/html",
                 "ACL" => "public-read",
             ],
             [
-                "Bucket" => awsS3BucketName,
+                "Bucket" => getenv('AWS_BUCKET'),
                 "Body" => file_get_contents(__DIR__ . "/../www/cache.manifest"),
                 "Key" => "cache.manifest",
                 "ContentType" => "text/cache-manifest",

@@ -1,7 +1,9 @@
 <?php
 date_default_timezone_set('UTC');
 require 'vendor/autoload.php';
-require_once __DIR__ . "/config.php";
+$dotenv = Dotenv\Dotenv::create(__DIR__);
+$dotenv->load();
+
 require_once __DIR__ . "/src/Fetcher.php";
 require_once __DIR__ . "/src/Parser.php";
 require_once __DIR__ . "/src/Generator.php";
@@ -15,7 +17,7 @@ $out_folder = __DIR__ . '/www';
 $feed = new SimplePie();
 $feed->set_cache_duration(600);
 $feed->set_cache_location(__DIR__ . '/cache');
-$feed->set_feed_url(feedUrl);
+$feed->set_feed_url(getenv('FEED_URL'));
 $feed->init();
 
 $articles = [];
