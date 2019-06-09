@@ -1,5 +1,5 @@
 .DS_Store
-/config.php
+.env
 index.html
 latest.html
 cache.manifest

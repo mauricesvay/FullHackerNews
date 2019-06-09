@@ -13,5 +13,10 @@
     "name": "tweet (mobile)",
     "pattern": "/http(s)?:\\/\\/mobile.twitter.com\\/(\\S+)\\/status\\/\\d+/",
     "path": "[data-testid='tweetDetail']"
+  },
+  {
+    "name": "arxiv.org",
+    "pattern": "/http(s)?:\\/\\/arxiv.org\\/abs\\/(\\S+)/",
+    "path": ".abstract"
   }
 ]
