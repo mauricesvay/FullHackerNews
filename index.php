@@ -35,6 +35,7 @@ foreach ($feed->get_items() as $i => $item) {
 }
 
 foreach ($articles as $i => $article) {
+    error_log("================================================================================");
     error_log(Color::set($article['url'], "yellow"));
     error_log("title: " . $articles[$i]['title'] . " (" . $articles[$i]['domain'] . ")");
     try {
@@ -53,6 +54,8 @@ foreach ($articles as $i => $article) {
     error_log("parsed: " . strlen($articles[$i]['parsed']));
 }
 
+error_log("================================================================================");
+error_log(Color::set("Uploading to S3", "yellow"));
 $out_index = FullFeed\Generator::renderTemplateWithArticles('index', $articles);
 file_put_contents($out_folder . '/index.html', $out_index);
 $out_latest = FullFeed\Generator::renderTemplateWithArticles('latest', $articles);
