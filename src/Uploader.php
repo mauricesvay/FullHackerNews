@@ -9,13 +9,9 @@ class Uploader
     public static function upload()
     {
 
-        $credentials = new \Aws\Credentials\Credentials(getenv('AWS_ACCESS_KEY_ID'), getenv('AWS_SECRET_ACCESS_KEY'));
-
         $s3 = new \Aws\S3\S3Client([
-            'profile' => 'default',
             'version' => 'latest',
             'region' => 'eu-west-1',
-            'credentials' => $credentials,
         ]);
 
         $files = [
