@@ -1,9 +1,8 @@
 <?php
 namespace FullFeed;
 
-require __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . "/../lib/FileSystemCache/lib/FileSystemCache.php";
-require_once __DIR__ . "/../lib/ansi-color.php";
 
 use PhpAnsiColor\Color;
 
