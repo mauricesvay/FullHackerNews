@@ -6,7 +6,7 @@ require_once __DIR__ . '/../lib/fivefilters-php-readability/Readability.php';
 
 use Opengraph;
 use PhpAnsiColor\Color;
-use Sunra\PhpSimple\HtmlDomParser;
+use PHPHtmlParser\Dom;
 
 const ARTICLE_MAXSIZE = 1024000;
 
@@ -21,7 +21,8 @@ class Parser
         foreach ($commonSites as $commonSite) {
             $isCommonSite = preg_match($commonSite['pattern'], $url);
             if ($isCommonSite) {
-                $dom = HtmlDomParser::str_get_html($strHtml);
+                $dom = new Dom;
+                $dom->loadStr($strHtml);
                 $domNode = $dom->find($commonSite['path']);
                 if (count($domNode)) {
                     error_log(Color::set("Common site extractor", "cyan"));
@@ -83,7 +84,8 @@ class Parser
         return $out;
     }
 
-    public static function extractImage($strHtml) {
+    public static function extractImage($strHtml)
+    {
         $reader = new Opengraph\Reader();
         $image = "";
         try {
